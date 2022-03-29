@@ -1,0 +1,117 @@
+{"level":"fatal","msg":"Error creating database files: failed to connect to `host=localhost user=bituser database=bitmedb`: server error (FATAL: unrecognized configuration parameter \"sslmde\" (SQLSTATE 42704))","time":"2022-03-17T16:46:51+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-17T16:51:00+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-17T16:54:11+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-17T16:59:42+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-17T17:05:01+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-17T17:05:32+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T15:23:14+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T15:37:02+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:00:18+03:00"}
+{"level":"fatal","msg":"Error creating database files: failed to connect to `host=localhost user=bituser database=bitmedb`: dial error (dial tcp 127.0.0.1:5433: connect: connection refused)","time":"2022-03-21T16:00:50+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:02:05+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:15:56+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:16:48+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:20:58+03:00"}
+{"level":"error","msg":"\u003cnil\u003e","time":"2022-03-21T16:21:15+03:00"}
+{"level":"error","msg":"\u003cnil\u003e","time":"2022-03-21T16:21:15+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:21:40+03:00"}
+{"level":"error","msg":"\u003cnil\u003e","time":"2022-03-21T16:23:18+03:00"}
+{"level":"error","msg":"\u003cnil\u003e","time":"2022-03-21T16:23:18+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:23:31+03:00"}
+{"level":"error","msg":"\u003cnil\u003e","time":"2022-03-21T16:29:13+03:00"}
+{"level":"error","msg":"\u003cnil\u003e","time":"2022-03-21T16:29:13+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:32:23+03:00"}
+{"level":"error","msg":"\u003cnil\u003e","time":"2022-03-21T16:32:51+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:33:35+03:00"}
+{"level":"error","msg":"\u003cnil\u003e","time":"2022-03-21T16:34:07+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:34:55+03:00"}
+{"level":"error","msg":"ERROR: null value in column \"last_used\" of relation \"urldata\" violates not-null constraint (SQLSTATE 23502)","time":"2022-03-21T16:35:00+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:35:06+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:38:35+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T16:39:31+03:00"}
+{"level":"error","msg":"ERROR: invalid input syntax for type integer: \"\" (SQLSTATE 22P02)","time":"2022-03-21T16:39:31+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:40:56+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T16:42:29+03:00"}
+{"level":"error","msg":"ERROR: invalid input syntax for type integer: \"\" (SQLSTATE 22P02)","time":"2022-03-21T16:42:29+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:47:41+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T16:48:07+03:00"}
+{"level":"error","msg":"ERROR: invalid input syntax for type integer: \"\" (SQLSTATE 22P02)","time":"2022-03-21T16:48:07+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:48:31+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T16:50:06+03:00"}
+{"level":"error","msg":"ERROR: invalid input syntax for type integer: \"\" (SQLSTATE 22P02)","time":"2022-03-21T16:50:06+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:50:13+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T16:52:47+03:00"}
+{"level":"error","msg":"ERROR: invalid input syntax for type integer: \"\" (SQLSTATE 22P02)","time":"2022-03-21T16:52:47+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:53:06+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T16:53:40+03:00"}
+{"level":"error","msg":"ERROR: invalid input syntax for type integer: \"\" (SQLSTATE 22P02)","time":"2022-03-21T16:53:40+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:54:17+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T16:54:21+03:00"}
+{"level":"error","msg":"ERROR: invalid input syntax for type integer: \"\" (SQLSTATE 22P02)","time":"2022-03-21T16:54:21+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:55:23+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T16:55:42+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T16:55:42+03:00"}
+{"level":"error","msg":"ERROR: invalid input syntax for type integer: \"\" (SQLSTATE 22P02)","time":"2022-03-21T16:55:42+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:56:05+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T16:57:45+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T16:57:45+03:00"}
+{"level":"error","msg":"ERROR: invalid input syntax for type integer: \"\" (SQLSTATE 22P02)","time":"2022-03-21T16:57:45+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T16:59:22+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T16:59:42+03:00"}
+{"level":"error","msg":"ERROR: value too long for type character varying(10) (SQLSTATE 22001)","time":"2022-03-21T16:59:42+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T17:00:01+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T17:00:14+03:00"}
+{"level":"error","msg":"ERROR: value too long for type character varying(10) (SQLSTATE 22001)","time":"2022-03-21T17:00:14+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T17:00:19+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T17:00:49+03:00"}
+{"level":"error","msg":"ERROR: value too long for type character varying(10) (SQLSTATE 22001)","time":"2022-03-21T17:00:49+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T17:01:02+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T17:03:25+03:00"}
+{"level":"error","msg":"ERROR: value too long for type character varying(10) (SQLSTATE 22001)","time":"2022-03-21T17:03:25+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T17:03:28+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T17:03:41+03:00"}
+{"level":"error","msg":"ERROR: value too long for type character varying(10) (SQLSTATE 22001)","time":"2022-03-21T17:03:41+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T17:03:49+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-21T17:05:18+03:00"}
+{"level":"error","msg":"ERROR: value too long for type character varying(10) (SQLSTATE 22001)","time":"2022-03-21T17:05:18+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-21T17:06:08+03:00"}
+{"level":"error","msg":"timeout: context canceled","time":"2022-03-22T14:36:25+03:00"}
+{"level":"error","msg":"timeout: context canceled","time":"2022-03-22T14:36:26+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T14:40:02+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T14:43:52+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T14:46:17+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T14:47:49+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T14:49:37+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T14:49:47+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T14:59:01+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T15:17:51+03:00"}
+{"level":"error","msg":"ERROR: there is no unique or exclusion constraint matching the ON CONFLICT specification (SQLSTATE 42P10)","time":"2022-03-22T15:18:31+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T15:19:24+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T15:28:30+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T15:46:34+03:00"}
+{"level":"error","msg":"ERROR: syntax error at or near \",\" (SQLSTATE 42601)","time":"2022-03-22T16:23:58+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T16:24:11+03:00"}
+{"level":"error","msg":"ERROR: syntax error at or near \",\" (SQLSTATE 42601)","time":"2022-03-22T16:25:19+03:00"}
+{"level":"error","msg":"ERROR: syntax error at or near \",\" (SQLSTATE 42601)","time":"2022-03-22T16:25:51+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T16:26:27+03:00"}
+{"level":"error","msg":"ERROR: syntax error at or near \"WHERE\" (SQLSTATE 42601)","time":"2022-03-22T16:27:07+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T16:27:10+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T16:28:30+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T16:36:01+03:00"}
+{"level":"error","msg":"strconv.Atoi: parsing \"\": invalid syntax","time":"2022-03-22T16:36:27+03:00"}
+{"level":"error","msg":"ERROR: value too long for type character varying(10) (SQLSTATE 22001)","time":"2022-03-22T16:36:27+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-22T16:40:27+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-23T14:50:59+03:00"}
+{"level":"error","msg":"can't scan into dest[0]: cannot assign 0 into *string","time":"2022-03-23T14:53:39+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-23T14:54:00+03:00"}
+{"level":"error","msg":"no rows in result set","time":"2022-03-23T15:06:19+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-23T15:06:38+03:00"}
+{"level":"error","msg":"no rows in result set","time":"2022-03-23T15:08:49+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-23T15:08:57+03:00"}
+{"level":"error","msg":"no rows in result set","time":"2022-03-23T15:09:22+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-23T15:09:29+03:00"}
+{"level":"error","msg":"no rows in result set","time":"2022-03-23T15:12:11+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-23T15:12:19+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-23T15:14:31+03:00"}
+{"level":"error","msg":"context canceled","time":"2022-03-29T17:17:26+03:00"}
+{"level":"fatal","msg":"http: Server closed","time":"2022-03-29T17:20:49+03:00"}

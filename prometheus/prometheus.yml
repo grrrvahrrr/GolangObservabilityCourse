@@ -1,0 +1,32 @@
+# prometheus global config
+global:
+  scrape_interval: 15s # как часто очищать цели
+  evaluation_interval: 15s # смотрим, обновились ли правила
+# scrape_timeout is set to the global default (10s).
+alerting: # настройки для связанного Alertmanager
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - alertmanager:9093
+rule_files: # список файлов с правилами и алертами
+- "prometheus.rules.yml"
+- "alert.rules.yml"
+scrape_configs: # список целей с конфигурацией
+# metrics_path defaults to '/metrics'
+# scheme defaults to 'http'.
+  - job_name: prometheus
+    scrape_interval: 10s
+    scrape_timeout: 2s
+    honor_labels: true
+    static_configs:
+      - targets: ['prometheus:9090']
+  - job_name: 'bitme'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ["bitme:8000"]
+  - job_name: node-exporter
+    scrape_interval: 10s
+    scrape_timeout: 2s
+    honor_labels: true
+    static_configs:
+      - targets: ['node-exporter:9100']

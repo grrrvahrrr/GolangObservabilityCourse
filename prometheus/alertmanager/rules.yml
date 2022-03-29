@@ -1,0 +1,5 @@
+route:
+  reciever: 'telegram'
+
+recievers:
+  - name: 'telegram'
