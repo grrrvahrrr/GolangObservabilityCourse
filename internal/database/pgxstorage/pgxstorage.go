@@ -29,7 +29,7 @@ type PgxStorage struct {
 	db *pgxpool.Pool
 }
 
-func NewPgxConfig(dsn string, maxConns int32, minConns int32, healthCheckMin int, maxConnIdleTimeMin int, connTimeoutSec int) (*pgxpool.Config, error) {
+func NewPgxConfig(dsn string, maxConns int32, minConns int32, lifeTime int32, idleTimeSec int32) (*pgxpool.Config, error) {
 	cfg, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
 		return nil, err
@@ -37,9 +37,8 @@ func NewPgxConfig(dsn string, maxConns int32, minConns int32, healthCheckMin int
 
 	cfg.MaxConns = maxConns
 	cfg.MinConns = minConns
-	cfg.HealthCheckPeriod = time.Duration(healthCheckMin) * time.Minute
-	cfg.MaxConnIdleTime = time.Duration(maxConnIdleTimeMin) * time.Minute
-	cfg.ConnConfig.ConnectTimeout = time.Duration(connTimeoutSec) * time.Second
+	cfg.MaxConnLifetime = time.Duration(lifeTime) * time.Second
+	cfg.MaxConnIdleTime = time.Duration(idleTimeSec) * time.Second
 
 	return cfg, nil
 }
@@ -115,7 +114,7 @@ func (pgxs *PgxStorage) WriteData(ctx context.Context, url entities.UrlData) (*e
 
 	rows, err := pgxs.db.Query(ctx, `UPDATE bitme.urlusedata SET last_used = $3, ip_num_of_uses = $4 WHERE ip = $1 AND short_url = $2`,
 		dbd.IP, dbd.ShortURL, time.Now(), dbd.IPData)
-	if err != nil && err != pgx.ErrNoRows {
+	if err != nil {
 		return nil, err
 	}
 
@@ -197,7 +196,7 @@ func (pgxs *PgxStorage) GetIPData(ctx context.Context, url entities.UrlData) (st
 	}
 
 	rows, err := pgxs.db.Query(ctx, `SELECT ip, ip_num_of_uses FROM bitme.urlusedata WHERE short_url = $1`, dbd.ShortURL)
-	if err != nil {
+	if err != nil && err != pgx.ErrNoRows {
 		return "", err
 	}
 

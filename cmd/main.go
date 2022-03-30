@@ -4,7 +4,7 @@ import (
 	"CourseWork/internal/apichi"
 	"CourseWork/internal/apichi/openapichi"
 	"CourseWork/internal/config"
-	"CourseWork/internal/database/pgxstorage"
+	"CourseWork/internal/database"
 	"CourseWork/internal/dbbackend"
 	"CourseWork/internal/logging"
 	"CourseWork/internal/server"
@@ -44,19 +44,19 @@ func main() {
 
 	//Creating Storage
 	//const dsn = "postgres://bituser:bit@localhost:5433/bitmedb?sslmode=disable"
-	// udf, err := database.NewPgStorage(dsn)
-	// if err != nil {
-	// 	log.Fatal("Error creating database files: ", err)
-	// }
-
-	pgxcfg, err := pgxstorage.NewPgxConfig(os.Getenv("PG_DSN"), 8, 4, 1, 5, 1)
-	if err != nil {
-		log.Fatal("Error creating database config: ", err)
-	}
-	udf, err := pgxstorage.NewPgxStorage(ctx, pgxcfg)
+	udf, err := database.NewPgStorage(os.Getenv("PG_DSN"))
 	if err != nil {
 		log.Fatal("Error creating database files: ", err)
 	}
+
+	// pgxcfg, err := pgxstorage.NewPgxConfig(os.Getenv("PG_DSN"), 2, 1, 1, 2)
+	// if err != nil {
+	// 	log.Fatal("Error creating database config: ", err)
+	// }
+	// udf, err := pgxstorage.NewPgxStorage(ctx, pgxcfg)
+	// if err != nil {
+	// 	log.Fatal("Error creating database files: ", err)
+	// }
 
 	dbbe := dbbackend.NewDataStorage(udf)
 
