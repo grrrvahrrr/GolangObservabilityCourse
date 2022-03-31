@@ -39,22 +39,7 @@ services:
             - ./migrations:/migrations
         command: ["-path", "/migrations", "-database",  "postgres://bituser:bit@postgres/bitmedb?sslmode=disable", "up"]
         links: 
-            - postgres
-
-  bitme:
-    image: 127.0.0.1:5000/bitme:latest
-    container_name: bitme
-    build: .
-    restart: unless-stopped
-    ports:
-      - 8000:8000
-    environment:
-      PG_DSN: postgres://bituser:bit@postgres/bitmedb?sslmode=disable
-    depends_on:
-      - registry
-      - postgres
-    networks:
-      - bitmenet
+            - postgres 
 
   node-exporter:
     image: prom/node-exporter:latest
@@ -118,6 +103,66 @@ services:
       - GF_USERS_ALLOW_SIGN_UP=false
     networks:
       - bitmenet
+  
+  fluentd:
+    build: ./fluentd
+    container_name: fluentd
+    volumes:
+      - ./fluentd/conf:/fluentd/etc
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    networks:
+      - bitmenet
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.1.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    volumes:
+      - ./elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      - bitmenet
+
+  kibana:
+    image: kibana:7.9.2
+    container_name: kibana
+    environment: 
+      ELASTICSEARCH_URLS: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    volumes:
+      - ./kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - "5601:5601"
+    networks:
+      - bitmenet
+
+  bitme:
+    image: 127.0.0.1:5000/bitme:latest
+    container_name: bitme
+    build: .
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    environment:
+      PG_DSN: postgres://bituser:bit@postgres/bitmedb?sslmode=disable
+    depends_on:
+      - registry
+      - postgres
+      - fluentd
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-async-connect: "true"
+        fluentd-address: localhost:24224
+        tag: bitme
+    networks:
+      - bitmenet
+  
+  
 networks:
   bitmenet:

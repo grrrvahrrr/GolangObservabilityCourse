@@ -13,10 +13,13 @@ import (
 type Server struct {
 	srv http.Server
 	ds  *dbbackend.DataStorage
+	log *log.Logger
 }
 
-func NewServer(addr string, h http.Handler, config config.Config) *Server {
-	s := &Server{}
+func NewServer(addr string, h http.Handler, config config.Config, log *log.Logger) *Server {
+	s := &Server{
+		log: log,
+	}
 
 	//Server settings should come from config
 	s.srv = http.Server{
@@ -33,7 +36,7 @@ func (s *Server) Stop() {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	err := s.srv.Shutdown(ctx)
 	if err != nil {
-		log.Error(err)
+		s.log.WithField("server", "stop").Error(err)
 	}
 	cancel()
 }
@@ -43,7 +46,7 @@ func (s *Server) Start(ds *dbbackend.DataStorage) {
 	go func() {
 		err := s.srv.ListenAndServe()
 		if err != nil {
-			log.Fatal(err)
+			s.log.WithField("server", "start").Fatal(err)
 		}
 	}()
 }

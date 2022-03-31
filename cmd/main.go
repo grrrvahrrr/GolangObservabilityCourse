@@ -4,7 +4,7 @@ import (
 	"CourseWork/internal/apichi"
 	"CourseWork/internal/apichi/openapichi"
 	"CourseWork/internal/config"
-	"CourseWork/internal/database"
+	"CourseWork/internal/database/pgxstorage"
 	"CourseWork/internal/dbbackend"
 	"CourseWork/internal/logging"
 	"CourseWork/internal/server"
@@ -30,33 +30,35 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
 
 	//Logging
-	f, err := logging.LogErrors("error.log")
-	if err != nil {
-		log.Fatal("Error opening file: ", err)
-	}
-	defer f.Close()
+	// f, err := logging.LogErrors("error.log")
+	// if err != nil {
+	// 	log.Fatal("Error opening file: ", err)
+	// }
+	// defer f.Close()
+
+	logger := logging.NewLogger()
 
 	//Load Config
-	cfg, err := config.LoadConfig(cfg)
+	cfg, err := config.LoadConfig(cfg, logger)
 	if err != nil {
 		log.Fatal("Error loading config: ", err)
 	}
 
 	//Creating Storage
 	//const dsn = "postgres://bituser:bit@localhost:5433/bitmedb?sslmode=disable"
-	udf, err := database.NewPgStorage(os.Getenv("PG_DSN"))
-	if err != nil {
-		log.Fatal("Error creating database files: ", err)
-	}
-
-	// pgxcfg, err := pgxstorage.NewPgxConfig(os.Getenv("PG_DSN"), 2, 1, 1, 2)
-	// if err != nil {
-	// 	log.Fatal("Error creating database config: ", err)
-	// }
-	// udf, err := pgxstorage.NewPgxStorage(ctx, pgxcfg)
+	// udf, err := database.NewPgStorage(os.Getenv("PG_DSN"))
 	// if err != nil {
 	// 	log.Fatal("Error creating database files: ", err)
 	// }
+
+	pgxcfg, err := pgxstorage.NewPgxConfig(os.Getenv("PG_DSN"), 50, 10, 1, 2, logger)
+	if err != nil {
+		log.Fatal("Error creating database config: ", err)
+	}
+	udf, err := pgxstorage.NewPgxStorage(ctx, pgxcfg)
+	if err != nil {
+		log.Fatal("Error creating database files: ", err)
+	}
 
 	dbbe := dbbackend.NewDataStorage(udf)
 
@@ -69,8 +71,8 @@ func main() {
 
 	//Creating router and server
 	hs := apichi.NewHandlers(dbbe)
-	rt := openapichi.NewOpenApiRouter(hs, m)
-	srv := server.NewServer(":8000", rt, cfg)
+	rt := openapichi.NewOpenApiRouter(hs, m, logger)
+	srv := server.NewServer(":8000", rt, cfg, logger)
 
 	//Starting
 	srv.Start(dbbe)

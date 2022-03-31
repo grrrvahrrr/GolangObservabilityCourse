@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"net"
 	"net/http"
+	"runtime/debug"
 
 	chiprometheus "github.com/766b/chi-prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -22,8 +23,9 @@ var tpls embed.FS
 
 type OpenApiChi struct {
 	*chi.Mux
-	hs *apichi.Handlers
-	m  *BitmeMetrics
+	hs  *apichi.Handlers
+	m   *BitmeMetrics
+	log *log.Logger
 }
 
 type PageVars struct {
@@ -34,21 +36,23 @@ type PageVars struct {
 	IPData   string
 }
 
-func NewOpenApiRouter(hs *apichi.Handlers, m *BitmeMetrics) *OpenApiChi {
+func NewOpenApiRouter(hs *apichi.Handlers, m *BitmeMetrics, l *log.Logger) *OpenApiChi {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	//Prometheus middleware for chi
 	r.Use(chiprometheus.NewMiddleware("bitme"))
 
 	ret := &OpenApiChi{
-		hs: hs,
-		m:  m,
+		hs:  hs,
+		m:   m,
+		log: l,
 	}
 
 	r.Mount("/", Handler(ret))
 	swg, err := GetSwagger()
 	if err != nil {
-		log.Fatal("swagger fail")
+		//log.Fatal("swagger fail")
+		ret.log.WithField("stacktrace", string(debug.Stack())).Panicf("swagger fail")
 	}
 
 	r.Get("/swagger.json", func(w http.ResponseWriter, r *http.Request) {
@@ -76,16 +80,18 @@ func (UrlData) Render(w http.ResponseWriter, r *http.Request) error {
 
 // (GET /getData/{adminURL})
 func (rt *OpenApiChi) AdminRedirect(w http.ResponseWriter, r *http.Request, adminURL string) {
+	rt.log.WithField("method", r.Method).Info("AdminRedirect called")
+
 	urldata := UrlData{
 		AdminURL: adminURL,
 	}
 
 	nud, ipdata, err := rt.hs.GetDataHandle(r.Context(), apichi.ApiUrlData(urldata))
 	if err != nil {
-		log.Error(err)
+		rt.log.WithField("method", r.Method).Error(err)
 		err = render.Render(w, r, apichi.ErrRender(err))
 		if err != nil {
-			log.Error(err)
+			rt.log.WithField("method", r.Method).Error(err)
 		}
 	}
 
@@ -97,26 +103,27 @@ func (rt *OpenApiChi) AdminRedirect(w http.ResponseWriter, r *http.Request, admi
 
 	t, err := template.ParseFS(tpls, "pages/getData.html")
 	if err != nil {
-		log.Error("template parsing error: ", err)
+		rt.log.WithField("method", r.Method).Error("template parsing error: ", err)
 	}
 	err = t.Execute(w, DataURLVars)
 	if err != nil {
-		log.Error("template executing error: ", err)
+		rt.log.WithField("method", r.Method).Error("template executing error: ", err)
 	}
 
 }
 
 // (POST /shortenURL)
 func (rt *OpenApiChi) GenShortURL(w http.ResponseWriter, r *http.Request) {
+	rt.log.WithField("method", r.Method).Info("GenShortUrl called")
 
 	err := r.ParseForm()
 	if err != nil {
-		log.Error("error parsing form:", err)
+		rt.log.WithField("method", r.Method).Error("error parsing form:", err)
 	}
 
 	fullurl := r.Form.Get("fullurl")
 	if fullurl == "" {
-		log.Error("search query not found:", err)
+		rt.log.WithField("method", r.Method).Error("search query not found:", err)
 	}
 
 	urldata := UrlData{
@@ -125,10 +132,10 @@ func (rt *OpenApiChi) GenShortURL(w http.ResponseWriter, r *http.Request) {
 
 	nud, err := rt.hs.GenShortUrlHandle(r.Context(), apichi.ApiUrlData(urldata))
 	if err != nil {
-		log.Error(err)
+		rt.log.WithField("method", r.Method).Error(err)
 		err = render.Render(w, r, apichi.ErrRender(err))
 		if err != nil {
-			log.Error(err)
+			rt.log.WithField("method", r.Method).Error(err)
 		}
 	}
 
@@ -144,38 +151,39 @@ func (rt *OpenApiChi) GenShortURL(w http.ResponseWriter, r *http.Request) {
 
 	t, err := template.ParseFS(tpls, "pages/shortenURL.html")
 	if err != nil {
-		log.Error("template parsing error: ", err)
+		rt.log.WithField("method", r.Method).Error("template parsing error: ", err)
 	}
 	err = t.Execute(w, shortenURLVars)
 	if err != nil {
-		log.Error("template executing error: ", err)
+		rt.log.WithField("method", r.Method).Error("template executing error: ", err)
 	}
 
 }
 
 // (GET /su/{shortURL})
 func (rt *OpenApiChi) Redirect(w http.ResponseWriter, r *http.Request, shortURL string) {
+	rt.log.WithField("method", r.Method).Info("Redirect called")
 
 	if shortURL == "" {
 		err := render.Render(w, r, apichi.ErrInvalidRequest(http.ErrNotSupported))
-		log.Error(err)
+		rt.log.WithField("method", r.Method).Error(err)
 		if err != nil {
-			log.Error(err)
+			rt.log.WithField("method", r.Method).Error(err)
 		}
 		return
 	}
 
 	ip, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err != nil {
-		log.Error(err)
+		rt.log.WithField("method", r.Method).Error(err)
 	}
 
 	nud, err := rt.hs.RedirectionHandle(r.Context(), shortURL, ip)
 	if err != nil {
-		log.Error(err)
+		rt.log.WithField("method", r.Method).Error(err)
 		err = render.Render(w, r, apichi.ErrRender(err))
 		if err != nil {
-			log.Error(err)
+			rt.log.WithField("method", r.Method).Error(err)
 		}
 		return
 	}
@@ -186,13 +194,15 @@ func (rt *OpenApiChi) Redirect(w http.ResponseWriter, r *http.Request, shortURL 
 
 // (GET /home)
 func (rt *OpenApiChi) GetUserFullURL(w http.ResponseWriter, r *http.Request) {
+	rt.log.WithField("method", r.Method).Info("Homepage opened")
+
 	t, err := template.ParseFS(tpls, "pages/homepage.html")
 	if err != nil {
-		log.Error("template parsing error: ", err)
+		rt.log.WithField("method", r.Method).Error("template parsing error: ", err)
 	}
 
 	err = t.Execute(w, nil)
 	if err != nil {
-		log.Error("template execute error: ", err)
+		rt.log.WithField("method", r.Method).Error("template execute error: ", err)
 	}
 }

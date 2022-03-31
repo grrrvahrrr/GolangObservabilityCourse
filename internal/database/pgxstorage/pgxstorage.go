@@ -9,8 +9,10 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/log/logrusadapter"
 	"github.com/jackc/pgx/v4/pgxpool"
 	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/sirupsen/logrus"
 )
 
 var _ dbbackend.DataStore = &PgxStorage{}
@@ -29,7 +31,7 @@ type PgxStorage struct {
 	db *pgxpool.Pool
 }
 
-func NewPgxConfig(dsn string, maxConns int32, minConns int32, lifeTime int32, idleTimeSec int32) (*pgxpool.Config, error) {
+func NewPgxConfig(dsn string, maxConns int32, minConns int32, lifeTime int32, idleTimeSec int32, logger *logrus.Logger) (*pgxpool.Config, error) {
 	cfg, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
 		return nil, err
@@ -39,6 +41,8 @@ func NewPgxConfig(dsn string, maxConns int32, minConns int32, lifeTime int32, id
 	cfg.MinConns = minConns
 	cfg.MaxConnLifetime = time.Duration(lifeTime) * time.Second
 	cfg.MaxConnIdleTime = time.Duration(idleTimeSec) * time.Second
+	cfg.ConnConfig.LogLevel = pgx.LogLevelDebug
+	cfg.ConnConfig.Logger = logrusadapter.NewLogger(logger)
 
 	return cfg, nil
 }
