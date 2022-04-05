@@ -10,6 +10,8 @@ import (
 	"runtime/debug"
 
 	chiprometheus "github.com/766b/chi-prometheus"
+	"github.com/opentracing/opentracing-go"
+	tracelog "github.com/opentracing/opentracing-go/log"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	log "github.com/sirupsen/logrus"
 
@@ -23,9 +25,10 @@ var tpls embed.FS
 
 type OpenApiChi struct {
 	*chi.Mux
-	hs  *apichi.Handlers
-	m   *BitmeMetrics
-	log *log.Logger
+	hs     *apichi.Handlers
+	m      *BitmeMetrics
+	log    *log.Logger
+	tracer opentracing.Tracer
 }
 
 type PageVars struct {
@@ -36,16 +39,17 @@ type PageVars struct {
 	IPData   string
 }
 
-func NewOpenApiRouter(hs *apichi.Handlers, m *BitmeMetrics, l *log.Logger) *OpenApiChi {
+func NewOpenApiRouter(hs *apichi.Handlers, m *BitmeMetrics, l *log.Logger, tracer opentracing.Tracer) *OpenApiChi {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	//Prometheus middleware for chi
 	r.Use(chiprometheus.NewMiddleware("bitme"))
 
 	ret := &OpenApiChi{
-		hs:  hs,
-		m:   m,
-		log: l,
+		hs:     hs,
+		m:      m,
+		log:    l,
+		tracer: tracer,
 	}
 
 	r.Mount("/", Handler(ret))
@@ -80,13 +84,21 @@ func (UrlData) Render(w http.ResponseWriter, r *http.Request) error {
 
 // (GET /getData/{adminURL})
 func (rt *OpenApiChi) AdminRedirect(w http.ResponseWriter, r *http.Request, adminURL string) {
+	span, ctx := opentracing.StartSpanFromContextWithTracer(r.Context(), rt.tracer,
+		"AdminRedirect")
+	defer span.Finish()
+
+	span.LogFields(
+		tracelog.String("adminURL", adminURL),
+	)
+
 	rt.log.WithField("method", r.Method).Info("AdminRedirect called")
 
 	urldata := UrlData{
 		AdminURL: adminURL,
 	}
 
-	nud, ipdata, err := rt.hs.GetDataHandle(r.Context(), apichi.ApiUrlData(urldata))
+	nud, ipdata, err := rt.hs.GetDataHandle(ctx, apichi.ApiUrlData(urldata))
 	if err != nil {
 		rt.log.WithField("method", r.Method).Error(err)
 		err = render.Render(w, r, apichi.ErrRender(err))
@@ -114,6 +126,10 @@ func (rt *OpenApiChi) AdminRedirect(w http.ResponseWriter, r *http.Request, admi
 
 // (POST /shortenURL)
 func (rt *OpenApiChi) GenShortURL(w http.ResponseWriter, r *http.Request) {
+	span, ctx := opentracing.StartSpanFromContextWithTracer(r.Context(), rt.tracer,
+		"AdminRedirect")
+	defer span.Finish()
+
 	rt.log.WithField("method", r.Method).Info("GenShortUrl called")
 
 	err := r.ParseForm()
@@ -130,7 +146,7 @@ func (rt *OpenApiChi) GenShortURL(w http.ResponseWriter, r *http.Request) {
 		FullURL: fullurl,
 	}
 
-	nud, err := rt.hs.GenShortUrlHandle(r.Context(), apichi.ApiUrlData(urldata))
+	nud, err := rt.hs.GenShortUrlHandle(ctx, apichi.ApiUrlData(urldata))
 	if err != nil {
 		rt.log.WithField("method", r.Method).Error(err)
 		err = render.Render(w, r, apichi.ErrRender(err))
@@ -162,6 +178,14 @@ func (rt *OpenApiChi) GenShortURL(w http.ResponseWriter, r *http.Request) {
 
 // (GET /su/{shortURL})
 func (rt *OpenApiChi) Redirect(w http.ResponseWriter, r *http.Request, shortURL string) {
+	span, ctx := opentracing.StartSpanFromContextWithTracer(r.Context(), rt.tracer,
+		"AdminRedirect")
+	defer span.Finish()
+
+	span.LogFields(
+		tracelog.String("shortURL", shortURL),
+	)
+
 	rt.log.WithField("method", r.Method).Info("Redirect called")
 
 	if shortURL == "" {
@@ -178,7 +202,7 @@ func (rt *OpenApiChi) Redirect(w http.ResponseWriter, r *http.Request, shortURL 
 		rt.log.WithField("method", r.Method).Error(err)
 	}
 
-	nud, err := rt.hs.RedirectionHandle(r.Context(), shortURL, ip)
+	nud, err := rt.hs.RedirectionHandle(ctx, shortURL, ip)
 	if err != nil {
 		rt.log.WithField("method", r.Method).Error(err)
 		err = render.Render(w, r, apichi.ErrRender(err))
@@ -194,6 +218,10 @@ func (rt *OpenApiChi) Redirect(w http.ResponseWriter, r *http.Request, shortURL 
 
 // (GET /home)
 func (rt *OpenApiChi) GetUserFullURL(w http.ResponseWriter, r *http.Request) {
+	span, _ := opentracing.StartSpanFromContextWithTracer(r.Context(), rt.tracer,
+		"AdminRedirect")
+	defer span.Finish()
+
 	rt.log.WithField("method", r.Method).Info("Homepage opened")
 
 	t, err := template.ParseFS(tpls, "pages/homepage.html")

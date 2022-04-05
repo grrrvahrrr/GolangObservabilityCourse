@@ -7,24 +7,28 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/opentracing-contrib/go-stdlib/nethttp"
+	"github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 )
 
 type Server struct {
-	srv http.Server
-	ds  *dbbackend.DataStorage
-	log *log.Logger
+	srv    http.Server
+	ds     *dbbackend.DataStorage
+	log    *log.Logger
+	tracer opentracing.Tracer
 }
 
-func NewServer(addr string, h http.Handler, config config.Config, log *log.Logger) *Server {
+func NewServer(addr string, h http.Handler, config config.Config, log *log.Logger, tracer opentracing.Tracer) *Server {
 	s := &Server{
-		log: log,
+		log:    log,
+		tracer: tracer,
 	}
 
 	//Server settings should come from config
 	s.srv = http.Server{
 		Addr:              addr,
-		Handler:           h,
+		Handler:           nethttp.Middleware(s.tracer, h),
 		ReadTimeout:       time.Duration(config.ReadTimeout) * time.Second,
 		WriteTimeout:      time.Duration(config.WriteTimeout) * time.Second,
 		ReadHeaderTimeout: time.Duration(config.ReadHeaderTimeout) * time.Second,

@@ -38,6 +38,14 @@ func main() {
 
 	logger := logging.NewLogger()
 
+	//Tracing
+	var ju openapichi.JaegerUtils
+	tracer, closer, err := ju.InitJaeger("localhost:6831", "bitme", logger)
+	if err != nil {
+		log.Fatal("Error loading tracer: ", err)
+	}
+	defer closer.Close()
+
 	//Load Config
 	cfg, err := config.LoadConfig(cfg, logger)
 	if err != nil {
@@ -71,8 +79,8 @@ func main() {
 
 	//Creating router and server
 	hs := apichi.NewHandlers(dbbe)
-	rt := openapichi.NewOpenApiRouter(hs, m, logger)
-	srv := server.NewServer(":8000", rt, cfg, logger)
+	rt := openapichi.NewOpenApiRouter(hs, m, logger, tracer)
+	srv := server.NewServer(":8000", rt, cfg, logger, tracer)
 
 	//Starting
 	srv.Start(dbbe)
@@ -85,6 +93,7 @@ func main() {
 	srv.Stop()
 	cancel()
 	udf.Close()
+	ju.Close()
 
 	fmt.Print("Server shutdown.")
 }
