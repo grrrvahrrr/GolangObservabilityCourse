@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"net"
 	"net/http"
+	"net/http/pprof"
 	"runtime/debug"
 
 	chiprometheus "github.com/766b/chi-prometheus"
@@ -66,6 +67,8 @@ func NewOpenApiRouter(hs *apichi.Handlers, m *BitmeMetrics, l *log.Logger, trace
 
 	//Added Prometheus
 	r.Handle("/metrics", promhttp.Handler())
+	//Added Profiler
+	r.Mount("/debug", Profiler())
 
 	ret.Mux = r
 
@@ -233,4 +236,25 @@ func (rt *OpenApiChi) GetUserFullURL(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		rt.log.WithField("method", r.Method).Error("template execute error: ", err)
 	}
+}
+
+func Profiler() http.Handler {
+	r := chi.NewRouter()
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, r.RequestURI+"/pprof/", http.StatusMovedPermanently)
+	})
+	r.HandleFunc("/pprof", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, r.RequestURI+"/", http.StatusMovedPermanently)
+	})
+	// Получение списка всех профилей
+	r.HandleFunc("/pprof/*", pprof.Index)
+	// Отображение строки запуска (например: /go-observability-course/examples/caching/redis/__debug_bin)
+	r.HandleFunc("/pprof/cmdline", pprof.Cmdline)
+	// профиль ЦПУ, в query-параметрах можно указать seconds со значением времени в секундах для снимка (по-умолчанию 30с)
+	r.HandleFunc("/pprof/profile", pprof.Profile)
+	r.HandleFunc("/pprof/symbol", pprof.Symbol)
+	// профиль для получения трассировки (последовательности инструкций) выполнения приложения за время seconds из query-параметров ( по-умолчанию 1с)
+	r.HandleFunc("/pprof/trace", pprof.Trace)
+
+	return r
 }

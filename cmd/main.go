@@ -63,7 +63,8 @@ func main() {
 	if err != nil {
 		log.Fatal("Error creating database config: ", err)
 	}
-	udf, err := pgxstorage.NewPgxStorage(ctx, pgxcfg)
+
+	udf, err := pgxstorage.NewPgxStorageChached(ctx, pgxcfg)
 	if err != nil {
 		log.Fatal("Error creating database files: ", err)
 	}

@@ -184,6 +184,14 @@ services:
     networks:
       - bitmenet
 
+  redis:
+    image: "redis:alpine"
+    ports:
+      - 6379:6379
+    command: redis-server   
+    networks:
+      - bitmenet
+
   bitme:
     image: 127.0.0.1:5000/bitme:latest
     container_name: bitme
@@ -197,6 +205,7 @@ services:
       - registry
       - postgres
       - jaeger
+      - redis
       # - fluentd
     logging:
       driver: "fluentd"
